@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function embed_filter_menu() {
+  $items['admin/config/content/embed_filter'] = array(
+    'title' => 'Embed filter',
+    'description' => '',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('embed_filter_settings'),
+    'access arguments' => array('administer site configuration'),
+    //'type' => MENU_NORMAL_ITEM,
+    'file' => 'embed_filter.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function embed_filter_filter_info() {
+  $filters['filter_embed'] = array(
+    'title' => t('Embed filter'),
+    'description' => t('Filter embed for cookie-less versions.'),
+    'process callback' => '_embed_filter_filter_process',
+    'tips callback' => '_embed_filter_filter_tips',
+    'cache' => FALSE,
+  );
+  return $filters;
+}
+
+/**
+ * Filter process callback for the embed input filter.
+ */
+function _embed_filter_filter_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  $patterns = explode("\n", variable_get('embed_filter_patterns', ''));
+  $replace = explode("\n", variable_get('embed_filter_replace', ''));
+  $text = preg_replace($patterns, $replace, $text);
+
+  return $text;
+}
+
+/**
+ * Filter tip callback for the embed input filter.
+ */
+function _embed_filter_filter_tips($filter, $format, $long = FALSE) {
+  return t('Filter embed for cookie-less versions.');
+}

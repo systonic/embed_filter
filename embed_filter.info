@@ -1,0 +1,5 @@
+name = Embed Filter
+description = Filter embed for cookie-less versions
+core = 7.x
+
+configure = admin/config/content/embed_filter
